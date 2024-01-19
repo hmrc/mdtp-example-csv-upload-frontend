@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.controllers
+package controllers
 
 import play.api.Configuration
 import uk.gov.hmrc.mdtpexamplecsvuploadfrontend.views.html.HelloWorldPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.mdtpexamplecsvuploadfrontend.config.AppConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future

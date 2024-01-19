@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.config
-
-import javax.inject.{Inject, Singleton}
+package config
 
 import play.api.i18n.MessagesApi
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import uk.gov.hmrc.mdtpexamplecsvuploadfrontend.views.html.ErrorTemplate
+import views.html.ErrorTemplate
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)

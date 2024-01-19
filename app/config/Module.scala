@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.config
+package config
 
 import play.api.inject.{Binding, Module => PlayModule}
 import play.api.{Configuration, Environment}

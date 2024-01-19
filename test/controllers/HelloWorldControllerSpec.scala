@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.controllers
+package controllers
 
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
