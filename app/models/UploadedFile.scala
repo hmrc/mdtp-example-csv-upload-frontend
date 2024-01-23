@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package models
 
 import enumeratum.{Enum, EnumEntry, PlayJsonEnum}
@@ -6,7 +22,7 @@ import play.api.libs.json.{Json, OFormat, OWrites, Reads, __}
 
 import java.time.Instant
 
-sealed abstract class UploadedFile extends Product with Serializable {
+sealed trait UploadedFile extends Product with Serializable {
 
   def reference: String
   def fileName: Option[String]
@@ -91,7 +107,7 @@ object UploadedFile {
     case object Duplicate extends FailureReason
   }
 
-  implicit lazy val reads: Reads[UploadedFile] =
+  private lazy val reads: Reads[UploadedFile] =
     (__ \ "fileStatus").read[String].flatMap {
       case "INITIATED" => __.read[Initiated].widen
       case "READY"     => __.read[Success].widen
@@ -99,7 +115,7 @@ object UploadedFile {
       case _           => Reads.failed("error.invalid")
     }
 
-  implicit lazy val writes: OWrites[UploadedFile] =
+  private lazy val writes: OWrites[UploadedFile] =
     OWrites {
       case i: UploadedFile.Initiated =>
         Json.toJsObject(i) ++ Json.obj("fileStatus" -> "INITIATED")
@@ -108,4 +124,7 @@ object UploadedFile {
       case f: UploadedFile.Failure   =>
         Json.toJsObject(f) ++ Json.obj("fileStatus" -> "FAILED")
     }
+
+  implicit lazy val format: OFormat[UploadedFile] =
+    OFormat(reads, writes)
 }

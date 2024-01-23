@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import play.api.inject.{Binding, Module => PlayModule}
-import play.api.{Configuration, Environment}
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
-import java.time.Clock
+import java.time.Instant
 
-class Module extends PlayModule {
+final case class UserFile(userId: String, uploadedFile: UploadedFile, updatedAt: Instant)
 
-  override def bindings(environment: Environment, configuration: Configuration): collection.Seq[Binding[_]] = {
+object UserFile extends MongoJavatimeFormats.Implicits {
 
-    Seq(
-      bind[AppConfig].toSelf.eagerly(),
-      bind[Clock].toInstance(Clock.systemUTC())
-    )
-  }
+  implicit lazy val format: OFormat[UserFile] = Json.format
 }
