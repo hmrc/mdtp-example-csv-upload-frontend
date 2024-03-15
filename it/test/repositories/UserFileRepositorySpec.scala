@@ -18,11 +18,13 @@ package repositories
 
 import models.{UploadedFile, UserFile}
 import org.mongodb.scala.model.{Filters, Updates}
+import org.scalactic.source.Position
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.slf4j.MDC
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,6 +33,7 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.temporal.ChronoUnit
 import java.time.{Clock, Instant, ZoneOffset}
+import scala.concurrent.{ExecutionContext, Future}
 
 class UserFileRepositorySpec
   extends AnyFreeSpec
@@ -87,6 +90,8 @@ class UserFileRepositorySpec
       repository.initiate("user1", initiatedFile2).futureValue
       repository.getFile("user1", "foo").futureValue.value mustEqual initiatedFile
     }
+
+    mustPreserveMdc(repository.getFile("user1", "foo"))
   }
 
   "initiate" - {
@@ -118,6 +123,8 @@ class UserFileRepositorySpec
       repository.initiate("user1", initiatedFile).futureValue
       repository.initiate("user2", initiatedFile).failed.futureValue
     }
+
+    mustPreserveMdc(repository.initiate("user1", initiatedFile))
   }
 
   "update" - {
@@ -144,5 +151,19 @@ class UserFileRepositorySpec
 
       repository.update(successfulFile).failed.futureValue mustEqual UserFileRepository.NothingToUpdateException
     }
+
+    mustPreserveMdc(repository.update(successfulFile).failed)
   }
+
+  private def mustPreserveMdc[A](f: => Future[A])(implicit pos: Position): Unit =
+    "must preserve MDC" in {
+
+      val ec = app.injector.instanceOf[ExecutionContext]
+
+      MDC.put("test", "foo")
+
+      f.map { _ =>
+        MDC.get("test") mustEqual "foo"
+      }(ec).futureValue
+    }
 }

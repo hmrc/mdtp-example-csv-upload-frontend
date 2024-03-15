@@ -17,9 +17,9 @@
 package controllers
 
 import play.api.Configuration
-import uk.gov.hmrc.mdtpexamplecsvuploadfrontend.views.html.HelloWorldPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import views.html.HelloWorldPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future

@@ -25,6 +25,7 @@ import play.api.Configuration
 import repositories.UserFileRepository.NothingToUpdateException
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.{Codecs, PlayMongoRepository}
+import uk.gov.hmrc.play.http.logging.Mdc
 
 import java.time.Clock
 import java.util.concurrent.TimeUnit
@@ -67,26 +68,32 @@ class UserFileRepository @Inject()(
   ) {
 
   def getFile(userId: String, reference: String): Future[Option[UploadedFile]] =
-    collection.find(userAndReferenceFilter(userId, reference))
-      .headOption().map(_.map(_.uploadedFile))
+    Mdc.preservingMdc {
+      collection.find(userAndReferenceFilter(userId, reference))
+        .headOption().map(_.map(_.uploadedFile))
+    }
 
   def initiate(userId: String, uploadedFile: UploadedFile): Future[Done] =
-    collection.replaceOne(
+    Mdc.preservingMdc {
+      collection.replaceOne(
         userAndReferenceFilter(userId, uploadedFile.reference),
         UserFile(userId, uploadedFile, clock.instant()),
         ReplaceOptions().upsert(true)
       ).toFuture().as(Done)
+    }
 
   def update(uploadedFile: UploadedFile): Future[Done] =
-    collection.findOneAndUpdate(
-      Filters.eq("uploadedFile.reference", uploadedFile.reference),
-      Updates.combine(
-        Updates.set("uploadedFile", uploadedFile),
-        Updates.set("updatedAt", clock.instant())
-      )
-    ).headOption().flatMap {
-      _.as(Future.successful(Done))
-        .getOrElse(Future.failed(NothingToUpdateException))
+    Mdc.preservingMdc {
+      collection.findOneAndUpdate(
+        Filters.eq("uploadedFile.reference", uploadedFile.reference),
+        Updates.combine(
+          Updates.set("uploadedFile", uploadedFile),
+          Updates.set("updatedAt", clock.instant())
+        )
+      ).headOption().flatMap {
+        _.as(Future.successful(Done))
+          .getOrElse(Future.failed(NothingToUpdateException))
+      }
     }
 
   private def userAndReferenceFilter(userId: String, reference: String): Bson =
