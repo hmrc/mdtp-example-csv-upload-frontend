@@ -18,7 +18,7 @@ package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.controllers
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.play.guice.{GuiceOneAppPerSuite, GuiceOneAppPerTest}
 import play.api.Application
 import play.api.http.Status
 import play.api.test.FakeRequest
@@ -48,6 +48,21 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
       val result = controller.helloWorld(fakeRequest)
       contentType(result) shouldBe Some("text/html")
       charset(result)     shouldBe Some("utf-8")
+    }
+
+    "return 404 if feature is disabled" in {
+      val appWithFeatureDisabled =
+        new GuiceApplicationBuilder()
+          .configure(
+            "metrics.jvm" -> false,
+            "metrics.enabled" -> false,
+            "microservice.features.helloWorld" -> false
+          )
+          .build()
+
+      val controllerWithFeatureDisabled = appWithFeatureDisabled.injector.instanceOf[HelloWorldController]
+      val result = controllerWithFeatureDisabled.helloWorld(fakeRequest)
+      status(result) shouldBe Status.NOT_FOUND
     }
   }
 }
