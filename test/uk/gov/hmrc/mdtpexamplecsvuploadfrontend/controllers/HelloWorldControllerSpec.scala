@@ -56,7 +56,7 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
           .configure(
             "metrics.jvm" -> false,
             "metrics.enabled" -> false,
-            "microservice.features.helloWorld" -> false
+            "features.helloWorld" -> false
           )
           .build()
 
