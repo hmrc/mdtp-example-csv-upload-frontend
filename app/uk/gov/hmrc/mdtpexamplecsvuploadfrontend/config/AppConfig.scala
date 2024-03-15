@@ -22,5 +22,5 @@ import play.api.Configuration
 @Singleton
 class AppConfig @Inject()(config: Configuration) {
   val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
-
+  val helloWorldControllerEnabled: Boolean = config.get[Boolean]("microservice.features.helloWorld")
 }
