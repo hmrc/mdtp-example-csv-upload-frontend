@@ -35,10 +35,10 @@ class HelloWorldController @Inject()(
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>
 
-    if (!helloWorldFeatureEnabled) {
-      Future.successful(NotFound)
-    } else {
+    if (helloWorldFeatureEnabled) {
       Future.successful(Ok(helloWorldPage()))
+    } else {
+      Future.successful(NotFound)
     }
   }
 }

@@ -16,34 +16,41 @@
 
 package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.controllers
 
+import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.Status
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.inject.guice.GuiceApplicationBuilder
 
-class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
-  override def fakeApplication(): Application =
+class HelloWorldControllerSpec extends AnyWordSpec with Matchers with OptionValues {
+  def app(featureEnabled: Boolean): Application =
     new GuiceApplicationBuilder()
+      .configure("features.helloWorld" -> featureEnabled)
       .build()
 
-  private val fakeRequest = FakeRequest("GET", "/")
-
-  private val controller = app.injector.instanceOf[HelloWorldController]
+  private val fakeRequest = FakeRequest(routes.HelloWorldController.helloWorld)
 
   "GET /" should {
     "return 200" in {
-      val result = controller.helloWorld(fakeRequest)
-      status(result) shouldBe Status.OK
+      val application = app(true)
+      running(application) {
+
+        val result = route(application, fakeRequest).value
+        status(result) shouldBe Status.OK
+        contentType(result) shouldBe Some("text/html")
+        charset(result) shouldBe Some("utf-8")
+      }
     }
 
-    "return HTML" in {
-      val result = controller.helloWorld(fakeRequest)
-      contentType(result) shouldBe Some("text/html")
-      charset(result)     shouldBe Some("utf-8")
+    "return 404 when feature disabled" in {
+      val application = app(false)
+      running(application) {
+        val result = route(application, fakeRequest).value
+        status(result) shouldBe Status.NOT_FOUND
+      }
     }
   }
 }
