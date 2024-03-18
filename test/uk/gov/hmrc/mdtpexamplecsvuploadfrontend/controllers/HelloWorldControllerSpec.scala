@@ -45,7 +45,7 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with OptionValu
       }
     }
 
-    "return 404 when feature disabled" in {
+    "return 404 when feature flag disabled" in {
       val application = app(false)
       running(application) {
         val result = route(application, fakeRequest).value
