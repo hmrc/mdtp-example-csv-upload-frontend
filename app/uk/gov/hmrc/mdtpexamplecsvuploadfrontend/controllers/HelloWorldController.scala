@@ -28,12 +28,14 @@ import scala.concurrent.Future
 @Singleton
 class HelloWorldController @Inject()(
   mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage, configuration: AppConfig)
+  helloWorldPage: HelloWorldPage, configuration: Configuration)
     extends FrontendController(mcc) {
+
+  private val helloWorldFeatureEnabled = configuration.get[Boolean]("features.helloWorld")
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>
 
-    if (!configuration.helloWorldControllerEnabled) {
+    if (!helloWorldFeatureEnabled) {
       Future.successful(NotFound)
     } else {
       Future.successful(Ok(helloWorldPage()))
