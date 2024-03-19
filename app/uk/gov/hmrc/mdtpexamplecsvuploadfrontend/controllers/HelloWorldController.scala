@@ -16,20 +16,29 @@
 
 package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.controllers
 
+import play.api.Configuration
 import uk.gov.hmrc.mdtpexamplecsvuploadfrontend.views.html.HelloWorldPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.mdtpexamplecsvuploadfrontend.config.AppConfig
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
 class HelloWorldController @Inject()(
   mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage)
+  helloWorldPage: HelloWorldPage, configuration: Configuration)
     extends FrontendController(mcc) {
 
-  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
-  }
+  private val helloWorldFeatureEnabled = configuration.get[Boolean]("features.helloWorld")
 
+  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
+
+    if (helloWorldFeatureEnabled) {
+      Future.successful(Ok(helloWorldPage()))
+    } else {
+      Future.successful(NotFound)
+    }
+  }
 }

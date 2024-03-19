@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.config
 
-import com.google.inject.AbstractModule
+import play.api.inject.{Binding, Module => PlayModule}
+import play.api.{Configuration, Environment}
 
-class Module extends AbstractModule {
+class Module extends PlayModule {
 
-  override def configure(): Unit = {
+  override def bindings(environment: Environment, configuration: Configuration): collection.Seq[Binding[_]] = {
 
-    bind(classOf[AppConfig]).asEagerSingleton()
+    Seq(bind[AppConfig].toSelf.eagerly())
   }
 }
