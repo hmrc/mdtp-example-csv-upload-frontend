@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.config
+package models
 
-import play.api.inject.{Binding, Module => PlayModule}
-import play.api.{Configuration, Environment}
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
-class Module extends PlayModule {
+import java.time.Instant
 
-  override def bindings(environment: Environment, configuration: Configuration): collection.Seq[Binding[_]] = {
+final case class UserFile(userId: String, uploadedFile: UploadedFile, updatedAt: Instant)
 
-    Seq(bind[AppConfig].toSelf.eagerly())
-  }
+object UserFile extends MongoJavatimeFormats.Implicits {
+
+  implicit lazy val format: OFormat[UserFile] = Json.format
 }

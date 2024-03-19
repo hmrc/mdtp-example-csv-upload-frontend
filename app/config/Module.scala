@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.mdtpexamplecsvuploadfrontend.config
+package config
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+import play.api.inject.{Binding, Module => PlayModule}
+import play.api.{Configuration, Environment}
 
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
-  val welshLanguageSupportEnabled: Boolean =
-    config.getOptional[Boolean]("features.welsh-language-support")
-    .getOrElse(false)
+import java.time.Clock
+
+class Module extends PlayModule {
+
+  override def bindings(environment: Environment, configuration: Configuration): collection.Seq[Binding[_]] = {
+
+    Seq(
+      bind[AppConfig].toSelf.eagerly(),
+      bind[Clock].toInstance(Clock.systemUTC())
+    )
+  }
 }
