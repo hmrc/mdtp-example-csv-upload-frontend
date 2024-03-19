@@ -31,7 +31,7 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with OptionValu
       .configure("features.helloWorld" -> featureEnabled)
       .build()
 
-  private val fakeRequest = FakeRequest(routes.HelloWorldController.helloWorld)
+  private def fakeRequest = FakeRequest(routes.HelloWorldController.helloWorld)
 
   "GET /" should {
     "return 200" in {
