@@ -20,14 +20,16 @@ import connectors.UpscanInitiateConnector
 import models.UploadedFile
 import models.upscan.{UpscanInitiateRequest, UpscanInitiateResponse}
 import org.apache.pekko.Done
-import org.mockito.scalatest.MockitoSugar
+import org.mockito.ArgumentMatchers.{eq as eqTo, any}
+import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import repositories.UserFileRepository
 import uk.gov.hmrc.http.HeaderCarrier
 

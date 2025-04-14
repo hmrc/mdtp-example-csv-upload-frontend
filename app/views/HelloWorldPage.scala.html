@@ -16,7 +16,7 @@
 
 @this(layout: Layout)
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: RequestHeader, messages: Messages)
 
 @layout(pageTitle = Some("mdtp-example-csv-upload-frontend")) {
     <h1 class="govuk-heading-xl">mdtp-example-csv-upload-frontend</h1>
