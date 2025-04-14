@@ -33,6 +33,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NoStackTrace
+import org.mongodb.scala.ObservableFuture
 
 @Singleton
 class UserFileRepository @Inject()(

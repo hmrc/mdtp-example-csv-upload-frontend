@@ -34,6 +34,7 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 import java.time.temporal.ChronoUnit
 import java.time.{Clock, Instant, ZoneOffset}
 import scala.concurrent.{ExecutionContext, Future}
+import org.mongodb.scala.ObservableFuture
 
 class UserFileRepositorySpec
   extends AnyFreeSpec
@@ -56,7 +57,7 @@ class UserFileRepositorySpec
     )
     .build()
 
-  override protected lazy val repository: UserFileRepository =
+  override protected val repository: UserFileRepository =
     app.injector.instanceOf[UserFileRepository]
 
   private val initiatedFile: UploadedFile = UploadedFile.Initiated("foo")
